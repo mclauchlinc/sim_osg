@@ -1,0 +1,28 @@
+Requirements = (HAS_SINGULARITY == TRUE) 
+## Go back to this to enable ssl-hep in a bit
+#+SingularityImage = "http://stash.osgconnect.net/public/tylern/clas6/clas6.img"
++SingularityImage = "/cvmfs/singularity.opensciencegrid.org/tylern4/clas6:latest"
+
+JobBatchName = e16_sim_$(Cluster)
+
+executable = do_sim_e16_osg.sh
+arguments = $(Cluster) $(Process) 
+transfer_input_files = twopi_e16.inp, gsim_e16.inp, user_ana_e16.tcl, parms.tar.gz
+
+output = logs/out_$(Cluster).$(Process)
+error = logs/err_$(Cluster).$(Process)
+log = logs/log_$(Cluster).$(Process).log
+
+
+#transfer_output_files = ""
+
+transfer_output_files = cooked_ana.root, tree_sigma.root
+transfer_output_remaps = "cooked_ana.root = /public/mclauchc/clas6/sim/2pi/e16/e16_osg_$(Cluster)_$(Process).root;tree_sigma.root = /public/mclauchc/clas6/sim/2pi/e16/sigma_e16_osg_$(Cluster)_$(Process).root"
+
+ 
+
+request_cpus = 1
+request_memory = 512MB
+request_disk = 5GB
+
+queue 8000
