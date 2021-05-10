@@ -46,6 +46,19 @@ export CLAS_CALDB_USER=clasreader
 
 export DATE=`date +%m-%d-%Y`
 
+export bosthrown=out.bos
+export gsimout=gsim.out
+export gppout=gpp.out
+export tclfile=user_ana_e16.tcl
+export ffread=gsim_e16.inp
+export anaout=ana.out
+export a1cout=a1c.out
+export a1crootout=cooked_a1c.root
+export anarootout=cooked_ana.root
+export anamergeout=cooked_ana_merged.root
+export a1cmergeout=cooked_a1c_merged.root
+export sigmafile=tree_sigma.root
+
 echoerr() { printf "%s\n" "$*" >&1; printf "%s\n" "$*" >&2; }
 
 echoerr "====== cpu info ======"
@@ -56,7 +69,7 @@ echoerr "====== cpu info ======"
 STARTTIME=$(date +%s)
 
 echoerr "============ TWOPEG ============"
-twopeg_bos.exe < twopi.inp
+twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 
 echoerr "============ start gsim_bat ============"
