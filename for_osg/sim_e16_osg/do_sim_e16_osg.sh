@@ -82,7 +82,7 @@ h10maker -rpm $anaout $anarootout
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
-rm -rf aao_rad.* anamonhist cooked.bos cooked_chist.hbook gsim.bos parms parms.tar.gz uncooked.bos
+#rm -rf aao_rad.* anamonhist cooked.bos cooked_chist.hbook gsim.bos parms parms.tar.gz uncooked.bos
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
