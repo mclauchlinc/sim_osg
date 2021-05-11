@@ -69,20 +69,21 @@ echoerr "====== cpu info ======"
 STARTTIME=$(date +%s)
 
 echoerr "============ TWOPEG ============"
+env 
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 
 echoerr "============ start gsim_bat ============"
-gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
+#gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 echoerr "============ end gsim_bat ============"
 
 echoerr "============ start gpp ============"
-gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+#gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
 #gpp -ouncooked.bos -R23500 gsim.bos
 echoerr "============ end gpp ============"
 
 echoerr "============ splitbos start =========="
-$SPLITBOS $gppout -runnum 10 -o $gppout.tmp
+splitbos $gppout -runnum 10 -o $gppout.tmp
 echoerr "============ splitbos end =========="
 
 echoerr "============ start user_ana ============"
