@@ -65,7 +65,7 @@ gsim_bat -ffread gsim_e16.inp -mcin out.bos -kine 1 -bosout gsim.out
 echoerr "============ end gsim_bat ============"
 
 echoerr "============ start gpp ============"
-gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout gsim.out
+gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -ogpp.out gsim.out
 #gpp -ouncooked.bos -R23500 gsim.bos
 echoerr "============ end gpp ============"
 
@@ -76,9 +76,9 @@ echoerr "============ splitbos end =========="
 echoerr "============ start user_ana ============"
 user_ana -t user_ana_e16.tcl | grep -v HFITGA | grep -v HFITH | grep -v HFNT
 echoerr "============ end user_ana ============"
-
+echoerr "============ start h10maker ============"
 h10maker -rpm ana.out cooked_ana.root
-
+echoerr "============ end h10maker ============"
 #ls -latr
 echoerr "============ cleanup ============"
 du -sh *
