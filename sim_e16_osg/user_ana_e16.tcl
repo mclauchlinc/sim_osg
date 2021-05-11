@@ -1,4 +1,4 @@
-source /data/parms/recsis/recsis_proc.tcl;
+source parms/recsis_proc.tcl;
 
 #
 # define packages
