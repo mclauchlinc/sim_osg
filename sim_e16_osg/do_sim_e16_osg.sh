@@ -83,7 +83,7 @@ echoerr "============ end h10maker ============"
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
-rm -rf ana.hbook ana.out gpp.hbook gpp.out gpp.out.tmp gsim.out gsim_e16.inp out.obs out_hist_test.root parms parms.tar.gz twopi_e16.inp user_ana_e16.tcl
+rm -rf ana.hbook ana.out gpp.hbook gpp.out gpp.out.tmp gsim.out gsim_e16.inp out.bos out_hist_test.root parms parms.tar.gz twopi_e16.inp user_ana_e16.tcl
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
