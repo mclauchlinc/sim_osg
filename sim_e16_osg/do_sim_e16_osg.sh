@@ -46,15 +46,6 @@ export CLAS_CALDB_USER=clasreader
 
 export DATE=`date +%m-%d-%Y`
 
-export bosthrown=out.bos
-export gsimout=gsim.out
-export gppout=gpp.out
-export tclfile=user_ana_e16.tcl
-export ffread=gsim_e16.inp
-export anaout=ana.out
-export anarootout=cooked_ana.root
-export sigmafile=tree_sigma.root
-
 echoerr() { printf "%s\n" "$*" >&1; printf "%s\n" "$*" >&2; }
 
 echoerr "====== cpu info ======"
@@ -70,29 +61,29 @@ twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 
 echoerr "============ start gsim_bat ============"
-gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
+gsim_bat -ffread gsim_e16.inp -mcin out.bos -kine 1 -bosout gsim.out
 echoerr "============ end gsim_bat ============"
 
 echoerr "============ start gpp ============"
-gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout gsim.out
 #gpp -ouncooked.bos -R23500 gsim.bos
 echoerr "============ end gpp ============"
 
 echoerr "============ splitbos start =========="
-splitbos $gppout -runnum 10 -o $gppout.tmp
+splitbos gpp.out -runnum 10 -o gpp.out.tmp
 echoerr "============ splitbos end =========="
 
 echoerr "============ start user_ana ============"
-user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
+user_ana -t user_ana_e16.tcl | grep -v HFITGA | grep -v HFITH | grep -v HFNT
 echoerr "============ end user_ana ============"
 
-h10maker -rpm $anaout $anarootout
+h10maker -rpm ana.out cooked_ana.root
 
 #ls -latr
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
-#rm -rf aao_rad.* anamonhist cooked.bos cooked_chist.hbook gsim.bos parms parms.tar.gz $gppout $gppout.tmp $gsimout $ffread
+#rm -rf parms parms.tar.gz gpp.out gpp.out.tmp gsim.out gsim_e16.inp twopi_e16.inp user_ana_e16.tcl
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
