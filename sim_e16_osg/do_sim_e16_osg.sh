@@ -52,11 +52,7 @@ export gppout=gpp.out
 export tclfile=user_ana_e16.tcl
 export ffread=gsim_e16.inp
 export anaout=ana.out
-export a1cout=a1c.out
-export a1crootout=cooked_a1c.root
 export anarootout=cooked_ana.root
-export anamergeout=cooked_ana_merged.root
-export a1cmergeout=cooked_a1c_merged.root
 export sigmafile=tree_sigma.root
 
 echoerr() { printf "%s\n" "$*" >&1; printf "%s\n" "$*" >&2; }
@@ -74,11 +70,11 @@ twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 
 echoerr "============ start gsim_bat ============"
-#gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
+gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 echoerr "============ end gsim_bat ============"
 
 echoerr "============ start gpp ============"
-#gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
 #gpp -ouncooked.bos -R23500 gsim.bos
 echoerr "============ end gpp ============"
 
@@ -96,7 +92,7 @@ h10maker -rpm $anaout $anarootout
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
-#rm -rf aao_rad.* anamonhist cooked.bos cooked_chist.hbook gsim.bos parms parms.tar.gz uncooked.bos
+#rm -rf aao_rad.* anamonhist cooked.bos cooked_chist.hbook gsim.bos parms parms.tar.gz $gppout $gppout.tmp $gsimout $ffread
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
