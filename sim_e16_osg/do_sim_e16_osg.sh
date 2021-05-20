@@ -35,6 +35,18 @@ export data_dir_2pi=/usr/local/2pi_event_generator/
 export CLAS_CALDB_RUNINDEX="calib_user.RunIndexe1_6"
 
 
+#Define filenames
+export bosthrown=out.bos
+export gsimout=gsim.out
+export gppout=gpp.out
+export tclfile=user_ana_e16.tcl
+export ffread=gsim_e16.inp
+export anaout=ana.out
+export a1cout=a1c.out
+export anarootout=cooked_ana.root
+export anamergeout=cooked_ana_merged.root
+export sigmafile=tree_sigma.root
+
 # export CLAS_CALDB_HOST=pi0.duckdns.org
 # export CLAS_CALDB_USER=root
 
@@ -43,6 +55,8 @@ export CLAS_CALDB_RUNINDEX="calib_user.RunIndexe1_6"
 
 export CLAS_CALDB_HOST="clasdb.jlab.org"
 export CLAS_CALDB_USER=clasreader
+
+#which twopeg_bos.exe
 
 export DATE=`date +%m-%d-%Y`
 
@@ -59,31 +73,36 @@ echoerr "============ TWOPEG ============"
 env 
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
-
-echoerr "============ start gsim_bat ============"
-gsim_bat -ffread gsim_e16.inp -mcin out.bos -kine 1 -bosout gsim.out
-echoerr "============ end gsim_bat ============"
-
-echoerr "============ start gpp ============"
-gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -ogpp.out gsim.out
-#gpp -ouncooked.bos -R23500 gsim.bos
-echoerr "============ end gpp ============"
-
-echoerr "============ splitbos start =========="
-splitbos gpp.out -runnum 10 -o gpp.out.tmp
-echoerr "============ splitbos end =========="
-
-echoerr "============ start user_ana ============"
-user_ana -t user_ana_e16.tcl | grep -v HFITGA | grep -v HFITH | grep -v HFNT
-echoerr "============ end user_ana ============"
-echoerr "============ start h10maker ============"
-h10maker -rpm ana.out cooked_ana.root
-echoerr "============ end h10maker ============"
+if [ -f $bosthrown ]; then
+	echoerr "Event Generated File Exists: $bosthrown"
+	echoerr "============ start gsim_bat ============"
+	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
+	echoerr "============ end gsim_bat ============"
+	if [ -f $gsimout ]; then
+		echoerr "$gsimout Generated"
+		echoerr "============ start gpp ============"
+		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+		#gpp -ouncooked.bos -R23500 gsim.bos
+		echoerr "============ end gpp ============"
+		if [ -f $gppout ]; then
+			echoerr "$gppout Generated"
+			echoerr "============ splitbos start =========="
+			splitbos $gppout -runnum 10 -o $gppout.tmp
+			echoerr "============ splitbos end =========="
+			if [ -f $gppout.tmp ]; then
+				echoerr "$gppout.tmp Generated"
+				echoerr "============ start user_ana ============"
+				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
+				echoerr "============ end user_ana ============"
+if [ -f $anaout ]; then
+	echoerr "============ start h10maker ============"
+	h10maker -rpm $anaout $anarootout
+	echoerr "============ end h10maker ============"
 #ls -latr
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
-rm -rf ana.hbook ana.out gpp.hbook gpp.out gpp.out.tmp gsim.out gsim_e16.inp out.bos out_hist_test.root parms parms.tar.gz twopi_e16.inp user_ana_e16.tcl
+rm -rf ana.hbook $anaout gpp.hbook $gppout $gppout.tmp $gsimout $ffread $bosthrown out_hist_test.root parms parms.tar.gz twopi_e16.inp $tclfile
 echoerr "============ cleanup ============"
 du -sh *
 echoerr "============ cleanup ============"
