@@ -1,5 +1,5 @@
 #!/bin/bash
-export CLAS_PARMS=/data/parms
+#export CLAS_PARMS=/data/parms
 export ROOTSYS=/usr/local/root
 export MYSQLINC=/usr/include/mysql
 export MYSQLLIB=/usr/lib64/mysql
@@ -37,6 +37,8 @@ export CLAS_PARMS=${PWD}/parms
 
 export data_dir_2pi=/usr/local/2pi_event_generator/
 export CLAS_CALDB_RUNINDEX="calib_user.RunIndexe1_6"
+export CLAS_CALDB_HOST="clasdb.jlab.org"
+export CLAS_CALDB_USER=clasreader
 
 
 #Define filenames
@@ -57,8 +59,7 @@ export sigmafile=tree_sigma.root
 # export CLAS_CALDB_HOST=clasdb.nickt.codes
 # export CLAS_CALDB_USER=clasuser
 
-export CLAS_CALDB_HOST="clasdb.jlab.org"
-export CLAS_CALDB_USER=clasreader
+
 
 
 export DATE=`date +%m-%d-%Y`
@@ -79,7 +80,6 @@ which twopeg_bos.exe
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 du -sh *
-echo $bosthrown
 if [ -f $bosthrown ]; then
 	#echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
@@ -89,31 +89,36 @@ if [ -f $bosthrown ]; then
 	du -sh *
 	if [ -f $gsimout ]; then
 		echoerr "$gsimout Generated"
-		echoerr "============ start gpp ============"
-		which gpp
-		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
-		#gpp -ouncooked.bos -R23500 gsim.bos
-		echoerr "============ end gpp ============"
-		du -sh *
-		if [ -f $gppout ]; then
-			echoerr "$gppout Generated"
-			echoerr "============ splitbos start =========="
-			which splitbos
-			splitbos $gppout -runnum 10 -o $gppout.tmp
-			echoerr "============ splitbos end =========="
+		gsimsize=$(ls -l $gsimout | nawk '{print $5}')
+		if [ $gsimsize -gt 2 ]; then
+			echoerr "============ start gpp ============"
+			which gpp
+			gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+			#gpp -ouncooked.bos -R23500 gsim.bos
+			echoerr "============ end gpp ============"
 			du -sh *
-			if [ -f $gppout.tmp ]; then
-				echoerr "$gppout.tmp Generated"
-				echoerr "============ start user_ana ============"
-				which user_ana
-				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
-				echoerr "============ end user_ana ============"
+			if [ -f $gppout ]; then
+				echoerr "$gppout Generated"
+				echoerr "============ splitbos start =========="
+				which splitbos
+				splitbos $gppout -runnum 10 -o $gppout.tmp
+				echoerr "============ splitbos end =========="
 				du -sh *
+				if [ -f $gppout.tmp ]; then
+					echoerr "$gppout.tmp Generated"
+					echoerr "============ start user_ana ============"
+					which user_ana
+					user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
+					echoerr "============ end user_ana ============"
+					du -sh *
+				else
+					echoerr "No $gppout.tmp found"
+				fi
 			else
-				echoerr "No $gppout.tmp found"
+				echoerr "No $gppout found"
 			fi
 		else
-			echoerr "No $gppout found"
+			echoerr "$gsimout not bigger than 2"
 		fi
 	else
 		echoerr "No $gsimout found"
