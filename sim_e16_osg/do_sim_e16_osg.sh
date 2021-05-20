@@ -19,6 +19,7 @@ export LD_LIBRARY_PATH=$ROOTSYS/lib:$CLAS_TOOL/slib/Linux:$CLAS6/lib
 
 source $ROOTSYS/bin/thisroot.sh
 
+
 # export TMPDIR=$(mktemp -d -p ${PWD})
 # echo $TMPDIR
 echo "check directory"
@@ -78,6 +79,7 @@ echoerr "============ TWOPEG ============"
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 du -sh *
+echo $bosthrown
 if [ -f $bosthrown ]; then
 	echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
