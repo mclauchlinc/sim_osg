@@ -80,8 +80,8 @@ twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 du -sh *
 echo $bosthrown
-if [ -f $bosthrown ]; then
-	echoerr "Event Generated File Exists: $bosthrown"
+#if [ -f $bosthrown ]; then
+	#echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 	echoerr "============ end gsim_bat ============"
