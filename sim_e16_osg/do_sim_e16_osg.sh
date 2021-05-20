@@ -74,30 +74,35 @@ echoerr "====== cpu info ======"
 STARTTIME=$(date +%s)
 
 echoerr "============ TWOPEG ============"
-env 
+#env 
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
+du -sh *
 if [ -f $bosthrown ]; then
 	echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 	echoerr "============ end gsim_bat ============"
+	du -sh *
 	if [ -f $gsimout ]; then
 		echoerr "$gsimout Generated"
 		echoerr "============ start gpp ============"
 		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
 		#gpp -ouncooked.bos -R23500 gsim.bos
 		echoerr "============ end gpp ============"
+		du -sh *
 		if [ -f $gppout ]; then
 			echoerr "$gppout Generated"
 			echoerr "============ splitbos start =========="
 			splitbos $gppout -runnum 10 -o $gppout.tmp
 			echoerr "============ splitbos end =========="
+			du -sh *
 			if [ -f $gppout.tmp ]; then
 				echoerr "$gppout.tmp Generated"
 				echoerr "============ start user_ana ============"
 				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
 				echoerr "============ end user_ana ============"
+				du -sh *
 if [ -f $anaout ]; then
 	echoerr "============ start h10maker ============"
 	h10maker -rpm $anaout $anarootout
