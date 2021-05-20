@@ -1,7 +1,6 @@
 Requirements = (HAS_SINGULARITY == TRUE) 
 ## Go back to this to enable ssl-hep in a bit
 #+SingularityImage = "http://stash.osgconnect.net/public/tylern/clas6/clas6.img"
-SINGULARITY_JOB = true
 +SingularityImage = "/cvmfs/singularity.opensciencegrid.org/tylern4/clas6:latest"
 
 

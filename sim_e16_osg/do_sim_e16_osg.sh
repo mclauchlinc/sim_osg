@@ -21,6 +21,9 @@ source $ROOTSYS/bin/thisroot.sh
 
 # export TMPDIR=$(mktemp -d -p ${PWD})
 # echo $TMPDIR
+echo "check directory"
+pwd
+ls
 
 export CLAS_CALDB_PASS=""
 #export CLAS_CALDB_RUNINDEX="RunIndex"
@@ -56,9 +59,10 @@ export sigmafile=tree_sigma.root
 export CLAS_CALDB_HOST="clasdb.jlab.org"
 export CLAS_CALDB_USER=clasreader
 
-#which twopeg_bos.exe
+which twopeg_bos.exe
 
 export DATE=`date +%m-%d-%Y`
+echo $DATE
 
 echoerr() { printf "%s\n" "$*" >&1; printf "%s\n" "$*" >&2; }
 
