@@ -60,7 +60,6 @@ export sigmafile=tree_sigma.root
 export CLAS_CALDB_HOST="clasdb.jlab.org"
 export CLAS_CALDB_USER=clasreader
 
-which twopeg_bos.exe
 
 export DATE=`date +%m-%d-%Y`
 echo $DATE
@@ -76,19 +75,22 @@ STARTTIME=$(date +%s)
 
 echoerr "============ TWOPEG ============"
 #env 
+which twopeg_bos.exe
 twopeg_bos.exe < twopi_e16.inp
 echoerr "============ end TWOPEG ============"
 du -sh *
 echo $bosthrown
-#if [ -f $bosthrown ]; then
+if [ -f $bosthrown ]; then
 	#echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
+	which gsim_bat
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 	echoerr "============ end gsim_bat ============"
 	du -sh *
 	if [ -f $gsimout ]; then
 		echoerr "$gsimout Generated"
 		echoerr "============ start gpp ============"
+		which gpp
 		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
 		#gpp -ouncooked.bos -R23500 gsim.bos
 		echoerr "============ end gpp ============"
@@ -96,19 +98,35 @@ echo $bosthrown
 		if [ -f $gppout ]; then
 			echoerr "$gppout Generated"
 			echoerr "============ splitbos start =========="
+			which splitbos
 			splitbos $gppout -runnum 10 -o $gppout.tmp
 			echoerr "============ splitbos end =========="
 			du -sh *
 			if [ -f $gppout.tmp ]; then
 				echoerr "$gppout.tmp Generated"
 				echoerr "============ start user_ana ============"
+				which user_ana
 				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
 				echoerr "============ end user_ana ============"
 				du -sh *
+			else
+				echoerr "No $gppout.tmp found"
+			fi
+		else
+			echoerr "No $gppout found"
+		fi
+	else
+		echoerr "No $gsimout found"
+	fi
+else
+	echoerr "No $bosthrown found"
+fi
 if [ -f $anaout ]; then
 	echoerr "============ start h10maker ============"
+	which h10maker
 	h10maker -rpm $anaout $anarootout
 	echoerr "============ end h10maker ============"
+fi
 #ls -latr
 echoerr "============ cleanup ============"
 du -sh *
