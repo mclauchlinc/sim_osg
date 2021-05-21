@@ -89,9 +89,9 @@ if [ -f $bosthrown ]; then
 	du -sh *
 	if [ -f $gsimout ]; then
 		echoerr "$gsimout Generated"
-		gsimsize=$(ls -l $gsimout | nawk '{print $5}')
-		echoerr $gsimsize
-		if [ $gsimsize -gt 0 ]; then
+		#gsimsize=$(ls -l $gsimout | nawk '{print $5}')
+		#echoerr $gsimsize
+		#if [ $gsimsize -gt 0 ]; then
 			echoerr "============ start gpp ============"
 			which gpp
 			gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
@@ -118,9 +118,9 @@ if [ -f $bosthrown ]; then
 			else
 				echoerr "No $gppout found"
 			fi
-		else
-			echoerr "$gsimout not bigger than 0"
-		fi
+		#else
+		#	echoerr "$gsimout not bigger than 0"
+		#fi
 	else
 		echoerr "No $gsimout found"
 	fi
