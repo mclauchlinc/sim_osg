@@ -87,11 +87,11 @@ if [ -f $bosthrown ]; then
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
 	echoerr "============ end gsim_bat ============"
 	du -sh *
-	if [ -f $gsimout ]; then
+	if [ -s $gsimout ]; then
 		echoerr "$gsimout Generated"
-		#gsimsize=$(ls -l $gsimout | nawk '{print $5}')
-		#echoerr $gsimsize
-		#if [ $gsimsize -gt 0 ]; then
+		#gsimsize=$(find "$gsimout" -printf "%s")
+		#echoerr ${gsimsize}
+		#if [ ${gsimsize} -gt 0 ]; then
 			echoerr "============ start gpp ============"
 			which gpp
 			gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
