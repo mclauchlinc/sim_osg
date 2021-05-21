@@ -90,7 +90,8 @@ if [ -f $bosthrown ]; then
 	if [ -f $gsimout ]; then
 		echoerr "$gsimout Generated"
 		gsimsize=$(ls -l $gsimout | nawk '{print $5}')
-		if [ $gsimsize -gt 2 ]; then
+		echoerr $gsimsize
+		if [ $gsimsize -gt 0 ]; then
 			echoerr "============ start gpp ============"
 			which gpp
 			gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
@@ -118,7 +119,7 @@ if [ -f $bosthrown ]; then
 				echoerr "No $gppout found"
 			fi
 		else
-			echoerr "$gsimout not bigger than 2"
+			echoerr "$gsimout not bigger than 0"
 		fi
 	else
 		echoerr "No $gsimout found"
