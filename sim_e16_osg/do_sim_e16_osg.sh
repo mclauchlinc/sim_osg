@@ -78,71 +78,118 @@ echoerr "============ TWOPEG ============"
 #env 
 which twopeg_bos.exe
 twopeg_bos.exe < twopi_e16.inp
+wait
+echoerr "------------ mini cleanup -----------"
+echoerr "removing twopi_e16.inp"
+rm twopi_e16.inp
+echoerr "------------ mini cleanup -----------"
 echoerr "============ end TWOPEG ============"
 du -sh *
-if [ -f $bosthrown ]; then
-	#echoerr "Event Generated File Exists: $bosthrown"
+if [ -s $bosthrown ]; then
+	echoerr "Event Generated File Exists: $bosthrown"
 	echoerr "============ start gsim_bat ============"
 	which gsim_bat
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
+	wait
+	echoerr "------------ mini cleanup -----------"
+	echoerr "removing $bosthrown and $ffread"å
+	rm $bosthrown
+	rm $ffread
+	echoerr "------------ mini cleanup -----------"
 	echoerr "============ end gsim_bat ============"
 	du -sh *
 	if [ -s $gsimout ]; then
 		echoerr "$gsimout Generated"
-		#gsimsize=$(find "$gsimout" -printf "%s")
-		#echoerr ${gsimsize}
-		#if [ ${gsimsize} -gt 0 ]; then
-			echoerr "============ start gpp ============"
-			which gpp
-			gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
-			#gpp -ouncooked.bos -R23500 gsim.bos
-			echoerr "============ end gpp ============"
+		echoerr "============ start gpp ============"
+		which gpp
+		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
+		wait
+		echoerr "------------ mini cleanup -----------"
+		echoerr "removing $gsimout"
+		rm $gsimout
+		echoerr "------------ mini cleanup -----------"
+		echoerr "============ end gpp ============"
+		du -sh *
+		if [ -s $gppout ]; then
+			echoerr "$gppout Generated"
+			echoerr "============ splitbos start =========="
+			which splitbos
+			splitbos $gppout -runnum 10 -o $gppout.tmp
+			wait
+			echoerr "------------ mini cleanup -----------"
+			echoerr "Removing $gppout"
+			rm $gppout
+			echoerr "------------ mini cleanup -----------"
+			echoerr "============ splitbos end =========="
 			du -sh *
-			if [ -f $gppout ]; then
-				echoerr "$gppout Generated"
-				echoerr "============ splitbos start =========="
-				which splitbos
-				splitbos $gppout -runnum 10 -o $gppout.tmp
-				echoerr "============ splitbos end =========="
+			if [ -s $gppout.tmp ]; then
+				echoerr "$gppout.tmp Generated"
+				echoerr "============ start user_ana ============"
+				which user_ana
+				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
+				wait
+				echoerr "------------ mini cleanup -----------"
+				echoerr "removing $gppout.tmp and $tclfile"
+				rm $gppout.tmp
+				rm $tclfile
+				echoerr "------------ mini cleanup -----------"
+				echoerr "============ end user_ana ============"
 				du -sh *
-				if [ -f $gppout.tmp ]; then
-					echoerr "$gppout.tmp Generated"
-					echoerr "============ start user_ana ============"
-					which user_ana
-					user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
-					echoerr "============ end user_ana ============"
-					du -sh *
-				else
-					echoerr "No $gppout.tmp found"
-				fi
 			else
-				echoerr "No $gppout found"
+				echoerr "No good $gppout.tmp found"
+				if [ -f $gppout.tmp ]; then
+					echoerr "removing empty $gppout.tmp"
+					rm $gppout.tmp
+				fi
 			fi
-		#else
-		#	echoerr "$gsimout not bigger than 0"
-		#fi
+		else
+			echoerr "No good $gppout found"
+			if [ -f $gppout ]; then
+				echoerr "removing empty $gppout"
+				rm $gppout
+			fi
+		fi
 	else
-		echoerr "No $gsimout found"
+		echoerr "No good $gsimout found"
+		if [ -f $gsimout ]; then
+			echoerr "removing empty $gsimout"
+			rm $gsimout
+		fi
 	fi
 else
-	echoerr "No $bosthrown found"
+	echoerr "No good $bosthrown found"
+	if [ -f $bosthrown ]; then
+		echoerr "removing empty $bosthrown"
+		rm $bosthrown
+	fi
 fi
-if [ -f $anaout ]; then
+if [ -s $anaout ]; then
 	echoerr "============ start h10maker ============"
 	which h10maker
 	h10maker -rpm $anaout $anarootout
+	wait
+	rm $anaout
 	echoerr "============ end h10maker ============"
+else
+	#If there is no cooked output, don't want to include an unpaired weight file pointlessly taking up space
+	echoerr "No $anaout that was not of size zero"
+	if [ -s tree_sigma.root ]; then
+		echoerr "removing extraneous tree_sigma.root file"
+		rm tree_sigma.root
+	else
+		echoerr "No good tree_sigma.root file either"
+	fi
 fi
 #ls -latr
-echoerr "============ cleanup ============"
+echoerr "============ cleanup1 ============"
 du -sh *
-echoerr "============ cleanup ============"
-rm -rf ana.hbook $anaout gpp.hbook $gppout $gppout.tmp $gsimout $ffread $bosthrown out_hist_test.root parms parms.tar.gz twopi_e16.inp $tclfile
-echoerr "============ cleanup ============"
+echoerr "============ cleanup2 ============"
+rm -rf ana.hbook gpp.hbook out_hist_test.root parms parms.tar.gz
+echoerr "============ cleanup3 ============"
 du -sh *
-echoerr "============ cleanup ============"
+echoerr "============ cleanup4 ============"
 df -h .
-echoerr "============ cleanup ============"
+echoerr "============ cleanup5 ============"
 
 ENDTIME=$(date +%s)
 echo "Hostname: $HOSTNAME"
