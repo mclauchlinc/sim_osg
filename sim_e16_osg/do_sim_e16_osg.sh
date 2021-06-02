@@ -78,7 +78,6 @@ echoerr "============ TWOPEG ============"
 #env 
 which twopeg_bos.exe
 twopeg_bos.exe < twopi_e16.inp
-wait
 echoerr "------------ mini cleanup -----------"
 echoerr "removing twopi_e16.inp"
 rm twopi_e16.inp
@@ -90,9 +89,8 @@ if [ -s $bosthrown ]; then
 	echoerr "============ start gsim_bat ============"
 	which gsim_bat
 	gsim_bat -ffread $ffread -mcin $bosthrown -kine 1 -bosout $gsimout
-	wait
 	echoerr "------------ mini cleanup -----------"
-	echoerr "removing $bosthrown and $ffread"å
+	echoerr "removing $bosthrown and $ffread"
 	rm $bosthrown
 	rm $ffread
 	echoerr "------------ mini cleanup -----------"
@@ -103,7 +101,6 @@ if [ -s $bosthrown ]; then
 		echoerr "============ start gpp ============"
 		which gpp
 		gpp -R1 -T0x1 -P0x1f -f1.3 -a2.25 -b2.25 -c2.25 -o$gppout $gsimout
-		wait
 		echoerr "------------ mini cleanup -----------"
 		echoerr "removing $gsimout"
 		rm $gsimout
@@ -115,7 +112,6 @@ if [ -s $bosthrown ]; then
 			echoerr "============ splitbos start =========="
 			which splitbos
 			splitbos $gppout -runnum 10 -o $gppout.tmp
-			wait
 			echoerr "------------ mini cleanup -----------"
 			echoerr "Removing $gppout"
 			rm $gppout
@@ -127,7 +123,6 @@ if [ -s $bosthrown ]; then
 				echoerr "============ start user_ana ============"
 				which user_ana
 				user_ana -t $tclfile | grep -v HFITGA | grep -v HFITH | grep -v HFNT
-				wait
 				echoerr "------------ mini cleanup -----------"
 				echoerr "removing $gppout.tmp and $tclfile"
 				rm $gppout.tmp
@@ -138,7 +133,7 @@ if [ -s $bosthrown ]; then
 			else
 				echoerr "No good $gppout.tmp found"
 				if [ -f $gppout.tmp ]; then
-					echoerr "removing empty $gppout.tmp"
+					echoerr "removing empty $gppout.tmp and $tclfile"
 					rm $gppout.tmp
 				fi
 			fi
@@ -167,7 +162,6 @@ if [ -s $anaout ]; then
 	echoerr "============ start h10maker ============"
 	which h10maker
 	h10maker -rpm $anaout $anarootout
-	wait
 	rm $anaout
 	echoerr "============ end h10maker ============"
 else
@@ -178,6 +172,10 @@ else
 		rm tree_sigma.root
 	else
 		echoerr "No good tree_sigma.root file either"
+	fi
+	if [ -f $tclfile ]; then
+		echoerr "Removing $tclfile"
+		rm $tclfile
 	fi
 fi
 #ls -latr
