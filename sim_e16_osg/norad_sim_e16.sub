@@ -17,7 +17,7 @@ log = logs/log_$(Cluster).$(Process).log
 
 #transfer_output_files = ""
 
-transfer_output_files = cooked_ana.root, tree_sigma.root
+transfer_output_files = cooked.root, tree_sigma.root
 transfer_output_remaps = "cooked.root = /public/mclauchc/clas6/sim/2pi/e16/no_rad/e16_osg_norad_$(Cluster)_$(Process).root;tree_sigma.root = /public/mclauchc/clas6/sim/2pi/e16/no_rad/sigma_e16_osg_norad_$(Cluster)_$(Process).root"
 
  
